@@ -16,15 +16,17 @@ class PartyMover
     def move_it!
       @instances.each do |instance|
         @current_instance = instance
-        save_content
-        store_content
-        clean_content
+        if content.file.present?
+          save_content
+          store_content
+          clean_content
+        end
       end
     end
 
     def save_content
       File.open(content_path, 'wb') do |file|
-        file.write(content)
+        file.write(content.read)
       end
     end
 
@@ -41,11 +43,11 @@ class PartyMover
     end
 
     def content_name
-      @current_instance.send(@mounted_as).file.path.split('/').last
+      content.file.path.split('/').last
     end
 
     def content
-      @current_instance.send(@mounted_as).read
+      @current_instance.send(@mounted_as)
     end
   end
 end
